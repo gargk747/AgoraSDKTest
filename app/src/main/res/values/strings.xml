@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AgoraTest</string>
+    <string name="agora_app_id">"471f8e06897b45bfb7a278211f5931ad"</string>
+    <string name="agora_access_token">"006471f8e06897b45bfb7a278211f5931adIADRFvM1ueGAytlGLKWuvHHq4DApQZAuwW/ILpciSz7Zwwx+f9gAAAAAEAAM2hL3+8r3YAEAAQD7yvdg"</string>
+</resources>
