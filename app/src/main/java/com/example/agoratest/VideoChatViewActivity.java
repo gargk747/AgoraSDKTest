@@ -50,6 +50,65 @@ public class VideoChatViewActivity extends AppCompatActivity {
     private ImageView mMuteBtn;
     private ImageView mSwitchCameraBtn;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_video_chat_view);
+
+        initUI();
+        if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
+                checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID))
+        {
+            initEngineAndJoinChannel();
+        }
+    }
+
+    private void initUI() {
+        mLocalContainer = findViewById(R.id.local_video_view_container);
+        mRemoteContainer = findViewById(R.id.remote_video_view_container);
+
+        mCallBtn = findViewById(R.id.btn_call);
+        mMuteBtn = findViewById(R.id.btn_mute);
+        mSwitchCameraBtn = findViewById(R.id.btn_switch_camera);
+
+
+    }
+
+    private boolean checkSelfPermission(String permission, int requestCode) {
+        if (ContextCompat.checkSelfPermission(this, permission) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, REQUESTED_PERMISSIONS, requestCode);
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQ_ID: {
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED) {
+                    break;
+                }
+                initEngineAndJoinChannel();
+                break;
+            }
+        }
+    }
+    private void showLongToast(final String msg) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
         public void onJoinChannelSuccess(String channel, final int uid, int elapsed) {
@@ -117,69 +176,6 @@ public class VideoChatViewActivity extends AppCompatActivity {
             mRemoteVideo = null;
         }
         endVideoCall();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_video_chat_view);
-
-        initUI();
-        if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
-                checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID))
-        {
-            initEngineAndJoinChannel();
-        }
-    }
-
-    private void initUI() {
-        mLocalContainer = findViewById(R.id.local_video_view_container);
-        mRemoteContainer = findViewById(R.id.remote_video_view_container);
-
-        mCallBtn = findViewById(R.id.btn_call);
-        mMuteBtn = findViewById(R.id.btn_mute);
-        mSwitchCameraBtn = findViewById(R.id.btn_switch_camera);
-
-
-    }
-
-    private void showSampleLogs() {
-
-    }
-
-    private boolean checkSelfPermission(String permission, int requestCode) {
-        if (ContextCompat.checkSelfPermission(this, permission) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, REQUESTED_PERMISSIONS, requestCode);
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PERMISSION_REQ_ID: {
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED) {
-                    break;
-                }
-                initEngineAndJoinChannel();
-                break;
-            }
-        }
-    }
-    private void showLongToast(final String msg) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     private void initEngineAndJoinChannel() {
