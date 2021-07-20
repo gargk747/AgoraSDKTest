@@ -214,6 +214,7 @@ public class VideoChatViewActivity extends AppCompatActivity {
         mLocalVideo = new VideoCanvas(view, VideoCanvas.RENDER_MODE_HIDDEN, 0);
         mRtcEngine.setupLocalVideo(mLocalVideo);
     }
+
     private void endVideoCall() {
         finish();
     }
